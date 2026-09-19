@@ -7,7 +7,15 @@ import 'package:bmi_app/widgets/info_user_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const new({super.key});
+  final bool isDarkMode;
+  final ValueChanged<bool> onThemeChanged;
+
+  const HomeScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeChanged,
+  });
+
   static String route = "HomeScreen";
 
   @override
@@ -15,34 +23,42 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool switchBtn = false;
   bool isMale = true;
   int height = 150;
-  int weight = 5;
-  int age = 5;
+  int weight = 50;
+  int age = 20;
+
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = widget.isDarkMode
+        ? const Color(0xff1C2135)
+        : Colors.grey[200];
+    final cardColor = widget.isDarkMode
+        ? const Color(0xff333244)
+        : Colors.white;
+    final appBarColor = widget.isDarkMode
+        ? const Color(0xff24263B)
+        : Colors.white;
+    final textColor = widget.isDarkMode ? Colors.white : Colors.black;
+
     return Scaffold(
-      backgroundColor: Color(0xff1C2135),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         centerTitle: true,
-        elevation: 100,
-        backgroundColor: Color(0xff24263B),
+        elevation: 2,
+        backgroundColor: appBarColor,
         title: Text(
           "BMI Calculator",
           style: TextStyle(
             fontSize: 20,
-            fontWeight: .w600,
-            color: Color(0xffFFFFFF),
+            fontWeight: FontWeight.w600,
+            color: textColor,
           ),
         ),
         leading: Switch(
-          value: switchBtn,
-          onChanged: (value) {
-            switchBtn = value;
-            setState(() {});
-          },
-          activeColor: Color(0xff3D81E8),
+          value: widget.isDarkMode,
+          onChanged: widget.onThemeChanged,
+          activeColor: const Color(0xff3D81E8),
           inactiveThumbColor: Colors.grey,
         ),
       ),
@@ -57,8 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 GenderWidget(
                   isSelected: isMale,
                   onTap: () {
-                    isMale = true;
-                    setState(() {});
+                    setState(() {
+                      isMale = true;
+                    });
                   },
                   image: "assets/icons/male-icon.png",
                   title: "Male",
@@ -66,8 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 GenderWidget(
                   isSelected: !isMale,
                   onTap: () {
-                    isMale = false;
-                    setState(() {});
+                    setState(() {
+                      isMale = false;
+                    });
                   },
                   image: "assets/icons/female-icon.png",
                   title: "Female",
@@ -77,17 +95,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xff333244),
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
-                  mainAxisAlignment: .spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
+                    const Text(
                       "Height",
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: .w400,
+                        fontWeight: FontWeight.w400,
                         color: Color(0xff8B8C9E),
                       ),
                     ),
@@ -96,15 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         text: height.toString(),
                         style: TextStyle(
                           fontSize: 32,
-                          fontWeight: .w600,
-                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
                         ),
-                        children: [
+                        children: const [
                           TextSpan(
                             text: 'cm',
                             style: TextStyle(
                               fontSize: 20,
-                              fontWeight: .w400,
+                              fontWeight: FontWeight.w400,
                               color: Color(0xff8B8C9E),
                             ),
                           ),
@@ -114,11 +132,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     Slider(
                       min: 50,
                       max: 250,
-                      activeColor: Color(0xff3D81E8),
+                      activeColor: const Color(0xff3D81E8),
                       value: height.toDouble(),
                       onChanged: (value) {
-                        height = value.toInt();
-                        setState(() {});
+                        setState(() {
+                          height = value.toInt();
+                        });
                       },
                     ),
                   ],
@@ -133,15 +152,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: "Weight",
                     value: weight,
                     add: () {
-                      if (weight <= 100) {
-                        weight++;
-                        setState(() {});
+                      if (weight <= 200) {
+                        setState(() {
+                          weight++;
+                        });
                       }
                     },
                     remove: () {
                       if (weight >= 2) {
-                        weight--;
-                        setState(() {});
+                        setState(() {
+                          weight--;
+                        });
                       }
                     },
                   ),
@@ -149,15 +170,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: "Age",
                     value: age,
                     add: () {
-                      if (age <= 50) {
-                        age++;
-                        setState(() {});
+                      if (age <= 120) {
+                        setState(() {
+                          age++;
+                        });
                       }
                     },
                     remove: () {
                       if (age >= 1) {
-                        age--;
-                        setState(() {});
+                        setState(() {
+                          age--;
+                        });
                       }
                     },
                   ),
@@ -184,18 +207,27 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class CustomButtonBMI extends StatelessWidget {
-  const new({super.key, required this.title, required this.onPressed});
+  const CustomButtonBMI({
+    super.key,
+    required this.title,
+    required this.onPressed,
+  });
   final String title;
   final void Function()? onPressed;
+
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
       onPressed: onPressed,
-      color: Color(0xff3D81E8),
-      padding: EdgeInsets.symmetric(vertical: 30),
+      color: const Color(0xff3D81E8),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
         title,
-        style: TextStyle(fontSize: 32, fontWeight: .w600, color: Colors.white),
+        style: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
       ),
     );
   }
